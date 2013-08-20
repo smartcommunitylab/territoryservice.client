@@ -1,0 +1,189 @@
+/*******************************************************************************
+ * Copyright 2012-2013 Trento RISE
+ * 
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ ******************************************************************************/
+package eu.trentorise.smartcampus.territoryservice.model;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class POIData implements Serializable {
+	private static final long serialVersionUID = 8503435300981426724L;
+
+	private double longitude;
+	private double latitude;
+	private String poiId;
+	private String datasetId;
+	private String street;
+	private String city;
+	private String postalCode;
+	private String region;
+	private String state;
+	private String country;
+	private String[] tags;
+	
+	public POIData() {
+		super();
+	}
+	
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getPoiId() {
+		return poiId;
+	}
+
+	public void setPoiId(String poiId) {
+		this.poiId = poiId;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String[] getTags() {
+		return tags;
+	}
+
+	public void setTags(String[] tags) {
+		this.tags = tags;
+	}
+
+	public String getDatasetId() {
+		return datasetId;
+	}
+
+	public void setDatasetId(String datasetId) {
+		this.datasetId = datasetId;
+	}
+
+	public static String getAddressString(POIData data) {
+		if (data == null) return "";
+		String s = "";
+		if (data.street != null) s += data.street+" ";
+		if (data.city != null) s += data.city + " ";
+		return s.trim();
+	}
+
+	/**
+	 * @param jsonObject
+	 * @return
+	 * @throws JSONException 
+	 */
+	public static POIData toObject(JSONObject jo) throws JSONException {
+		JSONHelper.clean(jo);
+		POIData o = new POIData();
+		o.setCity(jo.optString("city", null));
+		o.setCountry(jo.optString("country", null));
+		o.setDatasetId(jo.optString("datasetId", null));
+		o.setLatitude(jo.getDouble("latitude"));
+		o.setLongitude(jo.getDouble("longitude"));
+		o.setPoiId(jo.optString("poiId", null));
+		o.setPostalCode(jo.optString("postalCode", null));
+		o.setRegion(jo.optString("region", null));
+		o.setState(jo.optString("state", null));
+		o.setStreet(jo.optString("street", null));
+		if (!jo.isNull("tags")) {
+			List<String> tags = JSONHelper.toList(jo.getJSONArray("tags"), String.class);
+			if (tags != null) {
+				o.setTags(tags.toArray(new String[tags.size()]));
+			}
+		}
+		return o;
+	}
+
+	/**
+	 * @return
+	 * @throws JSONException 
+	 */
+	public JSONObject toJSON() throws JSONException {
+		JSONObject jo = new JSONObject();
+		jo.put("longitude", longitude);
+		jo.put("latitude", latitude);
+		jo.put("poiId", poiId);
+		jo.put("datasetId", datasetId);
+		jo.put("street", street);
+		jo.put("city", city);
+		jo.put("postalCode", postalCode);
+		jo.put("region", region);
+		jo.put("state", state);
+		jo.put("country", country);
+		if (tags != null) {
+			jo.put("tags", Arrays.asList(tags));
+		}
+		JSONHelper.clean(jo);
+		return jo;
+	}
+}

@@ -72,11 +72,12 @@ public class JSONHelper {
         return map;
     }
 
-	public static void clean(JSONObject o) {
+	public static void clean(JSONObject o) throws JSONException {
 		if (o == null) return;
-		String[] names = JSONObject.getNames(o);
+		JSONArray names = o.names();
 		if (names != null) {
-			for (String s : names) {
+			for (int i = 0; i < names.length(); i++) {
+				String s = names.getString(i);
 				if (o.isNull(s)) o.remove(s);
 			}
 		}

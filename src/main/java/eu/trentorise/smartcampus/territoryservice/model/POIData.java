@@ -16,11 +16,6 @@
 package eu.trentorise.smartcampus.territoryservice.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class POIData implements Serializable {
 	private static final long serialVersionUID = 8503435300981426724L;
@@ -137,53 +132,4 @@ public class POIData implements Serializable {
 		return s.trim();
 	}
 
-	/**
-	 * @param jsonObject
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static POIData toObject(JSONObject jo) throws JSONException {
-		JSONHelper.clean(jo);
-		POIData o = new POIData();
-		o.setCity(jo.optString("city", null));
-		o.setCountry(jo.optString("country", null));
-		o.setDatasetId(jo.optString("datasetId", null));
-		o.setLatitude(jo.getDouble("latitude"));
-		o.setLongitude(jo.getDouble("longitude"));
-		o.setPoiId(jo.optString("poiId", null));
-		o.setPostalCode(jo.optString("postalCode", null));
-		o.setRegion(jo.optString("region", null));
-		o.setState(jo.optString("state", null));
-		o.setStreet(jo.optString("street", null));
-		if (!jo.isNull("tags")) {
-			List<String> tags = JSONHelper.toList(jo.getJSONArray("tags"), String.class);
-			if (tags != null) {
-				o.setTags(tags.toArray(new String[tags.size()]));
-			}
-		}
-		return o;
-	}
-
-	/**
-	 * @return
-	 * @throws JSONException 
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject jo = new JSONObject();
-		jo.put("longitude", longitude);
-		jo.put("latitude", latitude);
-		jo.put("poiId", poiId);
-		jo.put("datasetId", datasetId);
-		jo.put("street", street);
-		jo.put("city", city);
-		jo.put("postalCode", postalCode);
-		jo.put("region", region);
-		jo.put("state", state);
-		jo.put("country", country);
-		if (tags != null) {
-			jo.put("tags", Arrays.asList(tags));
-		}
-		JSONHelper.clean(jo);
-		return jo;
-	}
 }

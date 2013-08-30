@@ -48,6 +48,7 @@ public class TestClient {
 		Assert.assertTrue(events.size() > 0);
 		System.err.println("Events: "+ events.size());
 		
+		
 		// limit to 10
 		filter.setLimit(10);
 		events = service.getEvents(filter ,Constants.USER_AUTH_TOKEN);

@@ -18,10 +18,6 @@ package eu.trentorise.smartcampus.territoryservice.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class BaseDTObject implements Serializable {
 	private static final long serialVersionUID = 3589900794339644582L;
 	// common fields
@@ -201,76 +197,5 @@ public class BaseDTObject implements Serializable {
 
 	public void setVersion(long version) {
 		this.version = version;
-	}
-
-	/**
-	 * @param o
-	 * @param jsonObject
-	 * @throws JSONException 
-	 */
-	public static void toObject(BaseDTObject o, JSONObject jo) throws JSONException {
-		o.setCommunityData(CommunityData.toObject(jo.getJSONObject("communityData")));
-		o.setCreatorId(jo.optString("creatorId", null));
-		o.setCreatorName(jo.optString("creatorName", null));
-		if (!jo.isNull("customData")) { 
-			o.setCustomData(JSONHelper.toMap(jo.getJSONObject("customData")));
-		}
-		o.setDescription(jo.optString("description", null));
-		o.setDomainId(jo.optString("domainId", null));
-		o.setDomainType(jo.optString("domainType", null));
-		o.setEntityId(jo.optString("entityId", null));
-		if (!jo.isNull("fromTime")) {
-			o.setFromTime(jo.getLong("fromTime"));
-		}
-		o.setId(jo.optString("id", null));
-		if (!jo.isNull("location")) {
-			JSONArray loc = jo.getJSONArray("location");
-			if (loc.length() > 0) {
-				o.setLocation(new double[]{loc.getDouble(0),loc.getDouble(1)});
-			}
-		}
-		o.setSource(jo.optString("source", null));
-		o.setTiming(jo.optString("timing", null));
-		o.setTitle(jo.optString("title", null));
-		if (!jo.isNull("toTime")) {
-			o.setToTime(jo.getLong("toTime"));
-		} else {
-			o.setToTime(o.getFromTime());
-		}
-		o.setType(jo.optString("type", null));
-		o.setUpdateTime(jo.getLong("updateTime"));
-		o.setVersion(jo.getLong("version"));
-	}
-
-	protected JSONObject toJSON() throws JSONException {
-		JSONObject jo = new JSONObject();
-		jo.put("id", id);
-		jo.put("updateTime", updateTime);
-		jo.put("version", version);
-		jo.put("domainType", domainType);
-		jo.put("domainId", domainId);
-		jo.put("description", description);
-		jo.put("title", title);
-		jo.put("source", source);
-		jo.put("entityId", entityId);
-		jo.put("creatorId", creatorId);
-		jo.put("creatorName", creatorName);
-		jo.put("type", type);
-		jo.put("fromTime", fromTime);
-		jo.put("toTime", toTime);
-		jo.put("timing", timing);
-		if (customData != null) {
-			JSONObject cd = new JSONObject(customData);
-			JSONHelper.clean(cd);
-			jo.put("customData", cd);
-		}
-		if (location != null) {
-			jo.put("location", location);
-		}
-		if (communityData != null) {
-			jo.put("communityData", communityData.toJSON());
-		}
-		
-		return jo;
 	}
 }

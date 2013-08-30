@@ -16,15 +16,9 @@
 
 package eu.trentorise.smartcampus.territoryservice.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class SyncData {
 
@@ -79,59 +73,4 @@ public class SyncData {
 		this.include = include;
 	}
 
-	/**
-	 * @param json
-	 * @return
-	 * @throws JSONException 
-	 */
-	@SuppressWarnings("unchecked")
-	public static SyncData toObject(String json) throws JSONException {
-		JSONObject jo = new JSONObject(json);
-		JSONHelper.clean(jo);
-		SyncData o = new SyncData();
-		o.setVersion(jo.getLong("version"));
-		if (!jo.isNull("exclude")) {
-			o.setExclude(JSONHelper.toMap(jo.getJSONObject("exclude")));
-		}
-		if (!jo.isNull("include")) {
-			o.setInclude(JSONHelper.toMap(jo.getJSONObject("include")));
-		}
-		if (!jo.isNull("deleted")) {
-			o.setDeleted(new HashMap<String, List<String>>());
-			JSONObject del = jo.getJSONObject("deleted");
-			for (Iterator<String> iterator = del.keys(); iterator.hasNext();) {
-				String key = iterator.next();
-				o.getDeleted().put(key, JSONHelper.toList(del.getJSONArray(key), String.class));
-			}
-		}
-		if (!jo.isNull("updated")) {
-			o.setUpdated(new HashMap<String, List<Object>>());
-			JSONObject upd = jo.getJSONObject("updated");
-			for (Iterator<String> iterator = upd.keys(); iterator.hasNext();) {
-				String key = iterator.next();
-				List<Object> list = new ArrayList<Object>();
-				JSONArray arr = upd.getJSONArray(key);
-				for (int i = 0; i < arr.length(); i++) {
-					list.add(elemToObject(key,arr.getJSONObject(i)));
-				}
-				o.getUpdated().put(key, list);
-			}
-		}
-
-		return o;
-	}
-
-	/**
-	 * @param key 
-	 * @param jsonObject
-	 * @return
-	 * @throws JSONException 
-	 */
-	private static Object elemToObject(String key, JSONObject jsonObject) throws JSONException {
-		if (key.endsWith(EventObject.class.getSimpleName())) return EventObject.toObject(jsonObject);
-		if (key.endsWith(POIObject.class.getSimpleName())) return POIObject.toObject(jsonObject);
-		if (key.endsWith(StoryObject.class.getSimpleName())) return StoryObject.toObject(jsonObject);
-		return null;
-	}
-	
 }

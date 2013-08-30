@@ -18,13 +18,8 @@ package eu.trentorise.smartcampus.territoryservice.model;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import eu.trentorise.smartcampus.social.model.Concept;
 
@@ -117,61 +112,5 @@ public class CommunityData implements Serializable {
 
 	public Map<String, Integer> getRating() {
 		return rating;
-	}
-
-	/**
-	 * @param jsonObject
-	 * @return
-	 * @throws JSONException 
-	 */
-	@SuppressWarnings("unchecked")
-	public static CommunityData toObject(JSONObject jo) throws JSONException {
-		JSONHelper.clean(jo);
-		CommunityData o = new CommunityData();
-		o.setAverageRating(jo.getInt("averageRating"));
-		o.setFollowsCount(jo.getInt("followsCount"));
-		o.setRatingsCount(jo.getInt("ratingsCount"));
-		if (!jo.isNull("following")) {
-			JSONObject following = jo.getJSONObject("following");
-			o.setFollowing(new HashMap<String, String>());
-			for (Iterator<String> iterator = following.keys(); iterator.hasNext();) {
-				String key = iterator.next();
-				o.getFollowing().put(key, following.optString(key, null));
-			}
-		}
-		if (!jo.isNull("tags")) {
-			o.setTags(Concept.toList(jo.getJSONArray("tags").toString()));
-		}
-		if (!jo.isNull("rating")) {
-			JSONObject ratings = jo.getJSONObject("rating");
-			o.setRating(new HashMap<String, Integer>());
-			for (Iterator<String> iterator = ratings.keys(); iterator.hasNext();) {
-				String key = iterator.next();
-				o.getRating().put(key, ratings.getInt(key));
-			}
-		}
-		return o;
-	}
-
-	/**
-	 * @return
-	 * @throws JSONException 
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject jo = new JSONObject();
-		if (tags != null) {
-			jo.put("tags", new JSONArray(Concept.toJson(tags)));
-		}
-		jo.put("averageRating", averageRating);
-		if (rating != null) {
-			jo.put("rating", rating);
-		}
-		if (following != null) {
-			jo.put("following", following);
-		}
-		jo.put("ratingsCount", ratingsCount);
-		jo.put("followsCount", followsCount);
-		JSONHelper.clean(jo);
-		return jo;
 	}
 }

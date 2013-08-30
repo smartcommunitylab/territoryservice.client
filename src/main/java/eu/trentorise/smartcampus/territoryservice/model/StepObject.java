@@ -17,9 +17,6 @@ package eu.trentorise.smartcampus.territoryservice.model;
 
 import java.io.Serializable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 
 public class StepObject implements Serializable {
 
@@ -48,28 +45,5 @@ public class StepObject implements Serializable {
 	}
 	public void setPoiId(String poiId) {
 		this.poiId = poiId;
-	}
-	/**
-	 * @param jsonObject
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static StepObject toObject(JSONObject jo) throws JSONException {
-		JSONHelper.clean(jo);
-		StepObject o = new StepObject();
-		o.setNote(jo.optString("note", null));
-		o.setPoiId(jo.optString("poiId", null));
-		return o;
-	}
-	/**
-	 * @return
-	 * @throws JSONException 
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject jo = new JSONObject();
-		jo.put("poiId", poiId);
-		jo.put("note", note);
-		JSONHelper.clean(jo);
-		return jo;
 	}
 }

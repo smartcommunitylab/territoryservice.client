@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class ObjectFilter {
 
 	private boolean myObjects;
@@ -139,36 +135,4 @@ public class ObjectFilter {
 		this.text = text;
 	}
 
-	/**
-	 * @return
-	 * @throws JSONException 
-	 */
-	public Object toJSON() throws JSONException {
-		JSONObject jo = new JSONObject();
-		jo.put("myObjects", myObjects);
-		if (center != null) {
-			jo.put("center", center);
-		}
-		if (types != null) {
-			jo.put("types", new JSONArray(types));
-		}
-		jo.put("radius", radius);
-		jo.put("fromTime", fromTime);
-		jo.put("toTime", toTime);
-		jo.put("limit", limit);
-		jo.put("skip", skip);
-		jo.put("text", text);
-		if (criteria != null) {
-			JSONObject jsonObject = new JSONObject(criteria);
-			JSONHelper.clean(jsonObject);
-			jo.put("criteria", jsonObject);
-		}
-		if (sort != null) {
-			JSONObject jsonObject = new JSONObject(sort);
-			JSONHelper.clean(jsonObject);
-			jo.put("sort", jsonObject);
-		}
-		JSONHelper.clean(jo);
-		return jo.toString();
-	}
 }

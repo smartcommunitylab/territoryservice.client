@@ -18,10 +18,6 @@ package eu.trentorise.smartcampus.territoryservice.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class StoryObject extends BaseDTObject {
 
 	private static final long serialVersionUID = -5123355788738143639L;
@@ -57,73 +53,6 @@ public class StoryObject extends BaseDTObject {
 
 	public void setAttendees(Integer attendees) {
 		this.attendees = attendees;
-	}
-
-	/**
-	 * @param json
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static List<StoryObject> toObjectList(String json) throws JSONException {
-		JSONArray arr = new JSONArray(json);
-		List<StoryObject> list = new ArrayList<StoryObject>();
-		for (int i = 0; i < arr.length(); i++) {
-			list.add(toObject(arr.getJSONObject(i)));
-		}
-		return list;
-	}
-
-	/**
-	 * @param jsonObject
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static StoryObject toObject(JSONObject jo) throws JSONException {
-		JSONHelper.clean(jo);
-		StoryObject o = new StoryObject();
-		BaseDTObject.toObject(o,jo);
-		o.setAttendees(jo.getInt("attendees"));
-		if (!jo.isNull("attending")) {
-			o.setAttending(JSONHelper.toList(jo.getJSONArray("attending"),String.class));
-		}
-		if (!jo.isNull("steps")) {
-			JSONArray steps = jo.getJSONArray("steps");
-			o.setSteps(new ArrayList<StepObject>());
-			for (int i = 0; i < steps.length(); i++) {
-				o.getSteps().add(StepObject.toObject(steps.getJSONObject(i)));
-			}
-		}
-		return o;
-	}
-
-	/**
-	 * @param json
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static StoryObject toObject(String json) throws JSONException {
-		return toObject(new JSONObject(json));
-	}
-	
-	/**
-	 * @return
-	 * @throws JSONException 
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject jo = super.toJSON();
-		if (steps != null) {
-			List<JSONObject> list = new ArrayList<JSONObject>();
-			for (StepObject step : steps) {
-				list.add(step.toJSON());
-			}
-			jo.put("steps", list);
-		}
-		if (attending != null) {
-			jo.put("attending", attending);
-		}
-		jo.put("attendees", attendees);
-		JSONHelper.clean(jo);
-		return jo;
 	}
 
 }

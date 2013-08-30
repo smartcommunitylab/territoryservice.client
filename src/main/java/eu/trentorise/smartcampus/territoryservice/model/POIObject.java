@@ -15,12 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.territoryservice.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class POIObject extends BaseDTObject {
 	private static final long serialVersionUID = 3377022799304541031L;
@@ -44,57 +38,6 @@ public class POIObject extends BaseDTObject {
 		if (super.getLocation() != null) return super.getLocation();
 		if (getPoi() != null) return new double[]{getPoi().getLatitude(),getPoi().getLongitude()};
 		return null;
-	}
-
-	/**
-	 * @param json
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static List<POIObject> toObjectList(String json) throws JSONException {
-		JSONArray arr = new JSONArray(json);
-		List<POIObject> list = new ArrayList<POIObject>();
-		for (int i = 0; i < arr.length(); i++) {
-			list.add(toObject(arr.getJSONObject(i)));
-		}
-		return list;
-	}
-
-	/**
-	 * @param jsonObject
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static POIObject toObject(JSONObject jo) throws JSONException {
-		JSONHelper.clean(jo);
-		POIObject o = new POIObject();
-		BaseDTObject.toObject(o,jo);
-		if (!jo.isNull("poi")) {
-			o.setPoi(POIData.toObject(jo.getJSONObject("poi")));
-		}
-		return o;
-	}
-
-	/**
-	 * @param json
-	 * @return
-	 * @throws JSONException 
-	 */
-	public static POIObject toObject(String json) throws JSONException {
-		return toObject(new JSONObject(json));
-	}
-	
-	/**
-	 * @return
-	 * @throws JSONException 
-	 */
-	public JSONObject toJSON() throws JSONException {
-		JSONObject jo = super.toJSON();
-		if (poi != null) {
-			jo.put("poi", poi.toJSON());
-		}
-		JSONHelper.clean(jo);
-		return jo;
 	}
 
 }

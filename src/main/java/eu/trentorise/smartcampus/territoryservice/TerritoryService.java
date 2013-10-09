@@ -22,6 +22,7 @@ import java.util.Map;
 
 import eu.trentorise.smartcampus.network.JsonUtils;
 import eu.trentorise.smartcampus.network.RemoteConnector;
+import eu.trentorise.smartcampus.territoryservice.model.BaseDTObject;
 import eu.trentorise.smartcampus.territoryservice.model.EventObject;
 import eu.trentorise.smartcampus.territoryservice.model.ObjectFilter;
 import eu.trentorise.smartcampus.territoryservice.model.POIObject;
@@ -48,6 +49,8 @@ public class TerritoryService {
 	private static final String RATE = "objects/%s/rate";
 	private static final String ATTEND = "objects/%s/attend";
 	private static final String NOT_ATTEND = "objects/%s/notAttend";
+	private static final String FOLLOW = "objects/%s/follow";
+	private static final String UNFOLLOW = "objects/%s/unfollow";
 	private String serviceUrl;
 
 	/**
@@ -228,6 +231,81 @@ public class TerritoryService {
 		}
 	}
 
+	/**
+	 * Follow a specific {@link POIObject}.
+	 * @param id
+	 * @param token user access token
+	 * @return updated object followed
+	 * @throws TerritoryServiceException
+	 */
+	public POIObject followPOI(String id, String token) throws TerritoryServiceException {
+		return follow(id, token, POIObject.class, true);
+	}
+	/**
+	 * Follow a specific {@link POIObject}.
+	 * @param id
+	 * @param token user access token
+	 * @return updated object followed
+	 * @throws TerritoryServiceException
+	 */
+	public POIObject unfollowPOI(String id, String token) throws TerritoryServiceException {
+		return follow(id, token, POIObject.class, false);
+	}
+	/**
+	 * Follow a specific {@link EventObject}.
+	 * @param id
+	 * @param token user access token
+	 * @return updated object followed
+	 * @throws TerritoryServiceException
+	 */
+	public EventObject followEvent(String id, String token) throws TerritoryServiceException {
+		return follow(id, token, EventObject.class, true);
+	}
+	/**
+	 * Follow a specific {@link EventObject}.
+	 * @param id
+	 * @param token user access token
+	 * @return updated object followed
+	 * @throws TerritoryServiceException
+	 */
+	public EventObject unfollowEvent(String id, String token) throws TerritoryServiceException {
+		return follow(id, token, EventObject.class, false);
+	}
+	/**
+	 * Follow a specific {@link StoryObject}.
+	 * @param id
+	 * @param token user access token
+	 * @return updated object followed
+	 * @throws TerritoryServiceException
+	 */
+	public StoryObject followStory(String id, String token) throws TerritoryServiceException {
+		return follow(id, token, StoryObject.class, true);
+	}
+	/**
+	 * Follow a specific {@link POIObject}.
+	 * @param id
+	 * @param token user access token
+	 * @return updated object followed
+	 * @throws TerritoryServiceException
+	 */
+	public StoryObject unfollowStory(String id, String token) throws TerritoryServiceException {
+		return follow(id, token, StoryObject.class, false);
+	}
+	
+	private <T extends BaseDTObject> T follow(String id, String token, Class<T> cls, boolean add) throws TerritoryServiceException{
+		if (id == null)
+			throw new TerritoryServiceException("Incomplete request parameters");
+		try {
+			id = URLEncoder.encode(id, "utf8");
+			String json = RemoteConnector.putJSON(serviceUrl, String.format(add ? FOLLOW : UNFOLLOW, id), token);
+			return JsonUtils.toObject(json, cls);
+		}catch (SecurityException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TerritoryServiceException(e);
+		}
+	}
+	
 	/**
 	 * Add or remove an event from personal ('my') stories
 	 * @param id of the object to add or remove

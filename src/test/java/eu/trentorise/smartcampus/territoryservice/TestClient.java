@@ -24,6 +24,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.trentorise.smartcampus.communicator.CommunicatorConnector;
+import eu.trentorise.smartcampus.communicator.model.Notifications;
 import eu.trentorise.smartcampus.territoryservice.model.EventObject;
 import eu.trentorise.smartcampus.territoryservice.model.ObjectFilter;
 import eu.trentorise.smartcampus.territoryservice.model.POIObject;
@@ -230,6 +232,7 @@ public class TestClient {
 	@Test
 	public void userEvents() throws TerritoryServiceException {
 		ObjectFilter filter = new ObjectFilter();
+		filter.setFromTime(System.currentTimeMillis());
 		filter.setLimit(1);
 		// for events
 		List<EventObject> events = service.getEvents(filter ,Constants.USER_AUTH_TOKEN);
@@ -326,5 +329,81 @@ public class TestClient {
 		SyncData sd = service.synchronize(0L, Collections.<String,Object>singletonMap("type", "Museums"), null, Constants.USER_AUTH_TOKEN);
 		Assert.assertNotNull(sd);
 		System.err.println(sd);
+	}
+	
+	@Test
+	public void follow() throws Exception {
+		ObjectFilter filter = new ObjectFilter();
+		filter.setCriteria(Collections.<String,Object>singletonMap("source", "OperaUniversitaria"));
+
+		List<POIObject> pois = service.getPOIs(filter , Constants.USER_AUTH_TOKEN);
+		Assert.assertNotNull(pois);
+		Assert.assertTrue(pois.size() > 0);
+		POIObject poi = pois.get(0);
+
+		CommunicatorConnector communicatorConnector = new CommunicatorConnector(Constants.COMMUNICATOR_SRV_URL, Constants.APPID);
+		long since = System.currentTimeMillis();
+		Notifications nots = communicatorConnector.getNotificationsByApp(since, 0, -1, Constants.USER_AUTH_TOKEN);
+		int size = nots.getNotifications().size();
+		Assert.assertNotNull(nots);
+		
+		filter.setFromTime(System.currentTimeMillis());
+		filter.setLimit(1);
+		filter.setCriteria(null);
+		// for events
+		List<EventObject> events = service.getEvents(filter ,Constants.USER_AUTH_TOKEN);
+		Assert.assertNotNull(events);
+		Assert.assertEquals(1, events.size());
+		EventObject o = events.get(0);
+
+		poi = service.followPOI(poi.getId(), Constants.USER_AUTH_TOKEN);
+		Assert.assertTrue(poi.getCommunityData().getFollowing().size() > 0);
+
+		o.setId(null);
+		o.setDomainId(null);
+		o.setDomainType(null);
+		o.setTitle("test event");
+		o.setTiming("18:00");
+		o.setFromTime(System.currentTimeMillis());
+		o.setToTime(o.getFromTime());
+		o.setPoiId(poi.getId());
+		
+		o = service.createEvent(o, Constants.USER_AUTH_TOKEN);
+		
+		Assert.assertNotNull(o);
+		System.err.println("created "+o.getId());
+		
+		Thread.sleep(2000);
+		nots = communicatorConnector.getNotificationsByApp(since, 0, -1, Constants.USER_AUTH_TOKEN);
+		Assert.assertEquals(1, nots.getNotifications().size()-size);
+		size = nots.getNotifications().size();
+		
+		service.followEvent(o.getId(), Constants.USER_AUTH_TOKEN);
+		
+		o.setTitle("Title changed");
+		o.setFromTime(System.currentTimeMillis());
+		o = service.updateEvent(o.getId(), o, Constants.USER_AUTH_TOKEN);
+		Assert.assertNotNull(o);
+		Assert.assertEquals("Title changed", o.getTitle());
+
+		Thread.sleep(2000);
+		nots = communicatorConnector.getNotificationsByApp(since, 0, -1, Constants.USER_AUTH_TOKEN);
+		Assert.assertEquals(1, nots.getNotifications().size()-size);
+		size = nots.getNotifications().size();
+
+		service.deleteEvent(o.getId(), Constants.USER_AUTH_TOKEN);
+		boolean deleted = false;
+		try {
+			o = service.getEvent(o.getId(), Constants.USER_AUTH_TOKEN);
+		} catch (Exception e) {
+			deleted = true;
+		}
+		Assert.assertTrue(deleted);
+
+		Thread.sleep(2000);
+		nots = communicatorConnector.getNotificationsByApp(since, 0, -1, Constants.USER_AUTH_TOKEN);
+		Assert.assertEquals(1, nots.getNotifications().size()-size);
+		size = nots.getNotifications().size();
+
 	}
 }

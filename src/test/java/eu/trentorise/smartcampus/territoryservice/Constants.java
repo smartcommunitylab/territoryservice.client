@@ -21,8 +21,10 @@ package eu.trentorise.smartcampus.territoryservice;
  */
 public class Constants {
 
-	static final String USER_AUTH_TOKEN = "1c489d97-11c5-4269-a2fd-441b9b618211";
-	static final String CLIENT_AUTH_TOKEN = "4272f548-a420-43d4-a68e-0c6c9d67710a";
+	static final String USER_AUTH_TOKEN = "fd5ffb29-d3c8-4a9c-86b2-6e7635a4101b";
+	static final String CLIENT_AUTH_TOKEN = "11c3cdc9-7611-4829-8b0e-2c64f74ad9b8";
 	public static final String SERVER_URL = "https://vas-dev.smartcampuslab.it/core.territory";
+	public static final String COMMUNICATOR_SRV_URL = "https://vas-dev.smartcampuslab.it/core.communicator";
+	public static final String APPID = "core.territory";
 
 }

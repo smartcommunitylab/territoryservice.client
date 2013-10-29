@@ -15,7 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.territoryservice;
 
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +94,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			String json = RemoteConnector.getJSON(serviceUrl, String.format(EVENTS_P, id), token);
 			return JsonUtils.toObject(json, EventObject.class);
 		}catch (SecurityException e) {
@@ -135,7 +133,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			String json = RemoteConnector.getJSON(serviceUrl, String.format(POIS_P, id), token);
 			return JsonUtils.toObject(json, POIObject.class);
 		}catch (SecurityException e) {
@@ -176,7 +173,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			String json = RemoteConnector.getJSON(serviceUrl, String.format(STORIES_P, id), token);
 			return JsonUtils.toObject(json, StoryObject.class);
 		}catch (SecurityException e) {
@@ -198,7 +194,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			Map<String,Object> params = Collections.<String,Object>singletonMap("rating",rating);
 			String json = RemoteConnector.putJSON(serviceUrl, String.format(RATE, id), null, token, params);
 			return Integer.parseInt(json);
@@ -221,7 +216,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			String json = RemoteConnector.putJSON(serviceUrl, String.format(add ? ATTEND : NOT_ATTEND, id), token);
 			return JsonUtils.toObject(json,EventObject.class);
 		}catch (SecurityException e) {
@@ -296,7 +290,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			String json = RemoteConnector.putJSON(serviceUrl, String.format(add ? FOLLOW : UNFOLLOW, id), token);
 			return JsonUtils.toObject(json, cls);
 		}catch (SecurityException e) {
@@ -318,7 +311,6 @@ public class TerritoryService {
 		if (id == null)
 			throw new TerritoryServiceException("Incomplete request parameters");
 		try {
-			id = URLEncoder.encode(id, "utf8");
 			String json = RemoteConnector.putJSON(serviceUrl, String.format(add ? ATTEND : NOT_ATTEND, id), token);
 			return JsonUtils.toObject(json, StoryObject.class);
 		}catch (SecurityException e) {
